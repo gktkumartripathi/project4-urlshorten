@@ -37,23 +37,27 @@ const isValid = function (value) {
     }
 }
 
-//Creating our first handler function
+// =================Creating post api for Urlshorten function============================//
+
+
 const URLshorten = async (req, res) => {
     try {
         const baseUrl = 'http://localhost:3000'
         const data = req.body
-        if (Object.keys(data) == 0) {
-            return res.status(400).send({ status: false, message: "Please provide URL" })
-        }
         const { longUrl } = data
-
-        if (!isValid(longUrl)) {
-            return res.status(400).send({ status: false, message: "Please provide URL" })
+        if (Object.keys(data) == 0) {
+            return res.status(400).send({ status: false, message: "Please provide Long URL" })
         }
+    
+        if (!isValid(longUrl)) {
+            return res.status(400).send({ status: false, message: "Please provide  the value of long URL" })
+        }
+
         //Checking if user entered a valid URL or not
+
         const validUrl = /^(http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/
         if(!validUrl.test(longUrl)) {
-            return res.status(400).send({ status: false, message: "Please enter a valid longUrl" })
+            return res.status(400).send({ status: false, message: "Please enter  valid format longUrl" })
         }
 
         const urlShortGenerated = shortid.generate()
@@ -89,8 +93,10 @@ const redirection = async (req, res) => {
     try {
         
         const { urlCode } = req.params
-        if(!urlCode){
-            return res.status(400).send({status:false,msg:'please provide urlcode'})
+        let validUrl = shortid.isValid(urlCode)
+        if(!validUrl){
+
+            return res.status(400).send({status:false,msg:'please provide valid urlcode'})
         }
         let cahcedUrlData = await GET_ASYNC(`${urlCode}`)
         let data = JSON.parse(cahcedUrlData)
@@ -103,7 +109,7 @@ const redirection = async (req, res) => {
             const url = await URLModel.findOne({ urlCode: urlCode })
 
             if (!url) {
-                return res.status(404).send({ status: false, message: "No URL found" })
+                return res.status(404).send({ status: false, message: "No URL with this code found" })
             }
             else {
                 return res.status(302).redirect(url.longUrl)
