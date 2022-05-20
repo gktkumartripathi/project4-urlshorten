@@ -48,7 +48,7 @@ const URLshorten = async (req, res) => {
         if (Object.keys(data) == 0) {
             return res.status(400).send({ status: false, message: "Please provide Long URL" })
         }
-    
+
         if (!isValid(longUrl)) {
             return res.status(400).send({ status: false, message: "Please provide  the value of long URL" })
         }
@@ -56,7 +56,7 @@ const URLshorten = async (req, res) => {
         //Checking if user entered a valid URL or not
 
         const validUrl = /^(http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/
-        if(!validUrl.test(longUrl)) {
+        if (!validUrl.test(longUrl)) {
             return res.status(400).send({ status: false, message: "Please enter  valid format longUrl" })
         }
 
@@ -91,12 +91,12 @@ const URLshorten = async (req, res) => {
 
 const redirection = async (req, res) => {
     try {
-        
+
         const { urlCode } = req.params
         let validUrl = shortid.isValid(urlCode)
-        if(!validUrl){
+        if (!validUrl) {
 
-            return res.status(400).send({status:false,msg:'please provide valid urlcode'})
+            return res.status(400).send({ status: false, msg: 'please provide valid urlcode' })
         }
         let cahcedUrlData = await GET_ASYNC(`${urlCode}`)
         let data = JSON.parse(cahcedUrlData)
